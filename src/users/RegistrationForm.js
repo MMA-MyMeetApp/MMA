@@ -16,7 +16,8 @@ function RegistrationForm() {
     const [formValues, setFormValues] = useState({
         nickName: '',
         email: '',
-        password: ''
+        password: '',
+        birthValue: birthValue
     });
 
     const handleSubmit = (event) => {
@@ -33,6 +34,7 @@ function RegistrationForm() {
     };
 
     if (isRegistered) {
+        setIsRegistered(false);
         return <LoginForm />;
     }
 
