@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import RegistrationForm from './users/RegistrationFrom.js';
+import RegistrationForm from './users/RegistrationForm.js';
 import "bootstrap/dist/css/bootstrap.min.css"
 
 
