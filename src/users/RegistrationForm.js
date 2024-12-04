@@ -13,10 +13,23 @@ function RegistrationForm() {
     const [birthValue, setBirthValue] = useState(null);
     const todayMinus18Years = dayjs().subtract(18, 'year');
     const [isRegistered, setIsRegistered] = useState(false);
+    const [formValues, setFormValues] = useState({
+        nickName: '',
+        email: '',
+        password: ''
+    });
 
     const handleSubmit = (event) => {
         event.preventDefault();
         setIsRegistered(true);
+    };
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setFormValues({
+            ...formValues,
+            [name]: value
+        });
     };
 
     if (isRegistered) {
@@ -33,8 +46,10 @@ function RegistrationForm() {
                         <input
                             type="text"
                             className="form-control text-center-placeholder"
-                            id="myInput"
+                            id="nickName"
                             name="nickName"
+                            value={formValues.nickName}
+                            onChange={handleInputChange}
                             placeholder="Petr012"
                         />
                     </div>
@@ -43,8 +58,10 @@ function RegistrationForm() {
                         <input
                             type="email"
                             className="form-control text-center-placeholder"
-                            id="myInput"
+                            id="email"
                             name="email"
+                            value={formValues.email}
+                            onChange={handleInputChange}
                             placeholder="petr.novak@gamil.com"
                         />
                     </div>
@@ -53,8 +70,10 @@ function RegistrationForm() {
                         <input
                             type="password"
                             className="form-control text-center-placeholder"
-                            id="myInput"
+                            id="password"
                             name="password"
+                            value={formValues.password}
+                            onChange={handleInputChange}
                             placeholder="**********"
                         />
                     </div>
@@ -72,11 +91,7 @@ function RegistrationForm() {
                                         minDate={dayjs().subtract(80, 'year')}
                                         maxDate={todayMinus18Years}
                                         onChange={(newValue) => {
-                                            if (newValue !== birthValue) {
-                                                setBirthValue(newValue);
-                                            } else {
-                                                setBirthValue(null);
-                                            }
+                                            setBirthValue(newValue);
                                         }}
                                         renderInput={(params) => (
                                             <TextField
@@ -94,7 +109,7 @@ function RegistrationForm() {
                             </Box>
                         </LocalizationProvider>
                     </div>
-                    <button type="submit" className="btn btn-light" onClick={handleSubmit}>Registrovat se</button>
+                    <button type="submit" className="btn btn-light">Registrovat se</button>
                 </form>
             </div>
         </div>
