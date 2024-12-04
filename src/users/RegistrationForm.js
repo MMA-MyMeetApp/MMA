@@ -15,13 +15,35 @@ function RegistrationForm() {
         nickName: '',
         email: '',
         password: '',
-        birthValue: birthValue ? birthValue : null
+        birthValue: birthValue ? birthValue : ''
     });
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+      
+        try {
+          const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formInputValues)
+          });
+      
+          if (!response.ok) {
+            throw new Error('Chyba při registraci');
+          }
+      
+          // Zpracovat úspěšnou odpověď
+          console.log('Registrace proběhla úspěšně');
+      
+        } catch (error) {
+          // Zpracovat chybu při odesílání dat
+          console.error('Chyba při registraci:', error);
+        }
         setIsRegistered(true);
-    };
+        return <LoginForm />;
+      };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
