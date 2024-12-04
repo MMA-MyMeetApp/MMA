@@ -2,22 +2,20 @@ import { useEffect, useState } from "react";
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/cs';
-import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import TextField from '@mui/material/TextField';
-import { DateField } from '@mui/x-date-pickers/DateField';
 import dayjs from 'dayjs';
 import { Box } from '@mui/material';
 import LoginForm from './LoginForm';
 
 function RegistrationForm() {
-    const [birthValue, setBirthValue] = useState(null);
+    const [birthValue, setBirthValue] = useState(dayjs().subtract(18, 'year'));
     const todayMinus18Years = dayjs().subtract(18, 'year');
     const [isRegistered, setIsRegistered] = useState(false);
-    const [formValues, setFormValues] = useState({
+    const [formInputValues, setFormInputValues] = useState({
         nickName: '',
         email: '',
         password: '',
-        birthValue: birthValue
+        birthValue: birthValue ? birthValue : null
     });
 
     const handleSubmit = (event) => {
@@ -27,14 +25,21 @@ function RegistrationForm() {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setFormValues({
-            ...formValues,
+        setFormInputValues({
+            ...formInputValues,
             [name]: value
         });
     };
 
+    const handleDateChange = (newValue) => {
+        setBirthValue(newValue);
+        setFormInputValues({
+            ...formInputValues,
+            birthValue: newValue
+        });
+    };
+
     if (isRegistered) {
-        setIsRegistered(false);
         return <LoginForm />;
     }
 
@@ -50,7 +55,7 @@ function RegistrationForm() {
                             className="form-control text-center-placeholder"
                             id="nickName"
                             name="nickName"
-                            value={formValues.nickName}
+                            value={formInputValues.nickName}
                             onChange={handleInputChange}
                             placeholder="Petr012"
                         />
@@ -62,7 +67,7 @@ function RegistrationForm() {
                             className="form-control text-center-placeholder"
                             id="email"
                             name="email"
-                            value={formValues.email}
+                            value={formInputValues.email}
                             onChange={handleInputChange}
                             placeholder="petr.novak@gamil.com"
                         />
@@ -74,7 +79,7 @@ function RegistrationForm() {
                             className="form-control text-center-placeholder"
                             id="password"
                             name="password"
-                            value={formValues.password}
+                            value={formInputValues.password}
                             onChange={handleInputChange}
                             placeholder="**********"
                         />
@@ -85,33 +90,24 @@ function RegistrationForm() {
                             dateAdapter={AdapterDayjs}
                             adapterLocale="cs">
                             <Box> 
-                                <DateField value={birthValue} className="bg-white rounded"/>
-                                <Box className="m-2 ">
-                                    <StaticDatePicker className="text-gray border rounded"
-                                        localeText={{ toolbarTitle: "Vyberte datum:" }}
-                                        defaultValue={todayMinus18Years}
-                                        minDate={dayjs().subtract(80, 'year')}
-                                        maxDate={todayMinus18Years}
-                                        onChange={(newValue) => {
-                                            setBirthValue(newValue);
-                                        }}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                className="form-control"
-                                            />
-                                        )}
-                                        slotProps={{
-                                            field: {
-                                                shouldRespectLeadingZeros: true
-                                            }
-                                        }}
-                                    />
-                                </Box>
+                                <DatePicker className="form-control"
+                                    views={['year', 'month']}
+                                    value={formInputValues.birthValue}
+                                    onChange={handleDateChange}
+                                    minDate={dayjs().subtract(80, 'year')}
+                                    maxDate={todayMinus18Years}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            className="form-control"
+                                            value={birthValue ? birthValue.format('YYYY-MM') : ''}
+                                        />
+                                    )}
+                                />
                             </Box>
                         </LocalizationProvider>
                     </div>
-                    <button type="submit" className="btn btn-light">Registrovat se</button>
+                    <button type="submit" className="btn btn-light m-1"><b>Registrovat se</b></button>
                 </form>
             </div>
         </div>
