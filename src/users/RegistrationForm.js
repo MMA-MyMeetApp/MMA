@@ -13,6 +13,7 @@ function RegistrationForm() {
     const [birthValue, setBirthValue] = useState(cookies.birthValue ? dayjs(cookies.birthValue) : dayjs().subtract(18, 'year'));
     const todayMinus18Years = dayjs().subtract(18, 'year');
     const [isRegistered, setIsRegistered] = useState(false);
+    //ONLY FOR TESTING !!!!!!!!!!!!!!!! - WILL BE REMOVED
     const [formInputValues, setFormInputValues] = useState({
         nickName: cookies.nickName || '',
         email: cookies.email || '',
@@ -35,18 +36,16 @@ function RegistrationForm() {
           if (!response.ok) {
             throw new Error('Chyba při registraci');
           }
-      
-          // Zpracovat úspěšnou odpověď
+
           console.log('Registrace proběhla úspěšně');
-          
-          // Set cookies for each form input value
+          //COOKIES ONLY FOR TESTING !!!!!!!!!!!!!!!! - WILL BE REMOVED - PASSWORD WILL BE HASHED ON BackEnd
           setCookie('nickName', formInputValues.nickName, { path: '/' });
           setCookie('email', formInputValues.email, { path: '/' });
           setCookie('password', formInputValues.password, { path: '/' });
           setCookie('birthValue', formInputValues.birthValue, { path: '/' });
       
         } catch (error) {
-          // Zpracovat chybu při odesílání dat
+
           console.error('Chyba při registraci:', error);
         }
         setIsRegistered(true);
@@ -61,7 +60,7 @@ function RegistrationForm() {
     };
 
     const handleDateChange = (newValue) => {
-        const newDate = newValue.date(15); // Set the day to 15
+        const newDate = newValue.date(15);
         setBirthValue(newDate);
         setFormInputValues({
             ...formInputValues,
