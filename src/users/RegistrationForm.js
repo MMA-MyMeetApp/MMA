@@ -6,25 +6,23 @@ import TextField from '@mui/material/TextField';
 import dayjs from 'dayjs';
 import { Box } from '@mui/material';
 import LoginForm from './LoginForm';
-import { useCookies } from 'react-cookie';
 
 function RegistrationForm() {
-    const [cookies, setCookie] = useCookies(['nickName', 'email', 'password', 'birthValue']);
-    const [birthValue, setBirthValue] = useState(cookies.birthValue ? dayjs(cookies.birthValue) : dayjs().subtract(18, 'year'));
+
     const todayMinus18Years = dayjs().subtract(18, 'year');
+    const [birthDate, setBirthDate] = useState(todayMinus18Years);
     const [isRegistered, setIsRegistered] = useState(false);
     //ONLY FOR TESTING !!!!!!!!!!!!!!!! - WILL BE REMOVED
     const [formInputValues, setFormInputValues] = useState({
-        nickName: cookies.nickName || '',
-        email: cookies.email || '',
-        password: cookies.password || '',
-        birthValue: cookies.birthValue || (birthValue ? birthValue.format('YYYY-MM-DD') : '')
+        nickName: '',
+        email: '',
+        password: '',
+        birthDate: birthDate.format('YYYY-MM-DD')
     });
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-      
-        try {
+      try {
           const response = await fetch('http://localhost:8080/api/user-rg', {
             method: 'POST',
             headers: {
@@ -33,24 +31,15 @@ function RegistrationForm() {
             body: JSON.stringify(formInputValues)
           });
       
-          if (!response.ok) {
-            throw new Error('Chyba při registraci');
+          if (response.ok) {
+            setIsRegistered(true);
+          } else {
+            console.error('Registration failed');
           }
-
-          console.log('Registrace proběhla úspěšně');
-          //COOKIES ONLY FOR TESTING !!!!!!!!!!!!!!!! - WILL BE REMOVED - PASSWORD WILL BE HASHED ON BackEnd
-          setCookie('nickName', formInputValues.nickName, { path: '/' });
-          setCookie('email', formInputValues.email, { path: '/' });
-          setCookie('password', formInputValues.password, { path: '/' });
-          setCookie('birthValue', formInputValues.birthValue, { path: '/' });
-      
         } catch (error) {
-
-          console.error('Chyba při registraci:', error);
+          console.error('Error during registration:', error);
         }
-        setIsRegistered(true);
       };
-
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFormInputValues({
@@ -60,11 +49,11 @@ function RegistrationForm() {
     };
 
     const handleDateChange = (newValue) => {
-        const newDate = newValue.date(15);
-        setBirthValue(newDate);
+        const newDate = newValue.date(1);
+        setBirthDate(newDate);
         setFormInputValues({
             ...formInputValues,
-            birthValue: newDate ? newDate.format('YYYY-MM-DD') : ''
+            birthDate:newDate.format('YYYY-MM-DD')
         });
     };
     
@@ -122,8 +111,9 @@ function RegistrationForm() {
                             adapterLocale="cs">
                             <Box> 
                                 <DatePicker className="form-control"
+                                id="birthYear"
                                     views={['year', 'month']}
-                                    value={birthValue}
+                                    value={birthDate}
                                     onChange={handleDateChange}
                                     minDate={dayjs().subtract(80, 'year')}
                                     maxDate={todayMinus18Years}
@@ -131,7 +121,7 @@ function RegistrationForm() {
                                         <TextField
                                             {...params}
                                             className="form-control"
-                                            value={birthValue ? birthValue.format('YYYY-MM-DD') : ''}
+                                            value={birthDate ? birthDate.format('YYYY-MM-DD') : ''}
                                         />
                                     )}
                                 />
